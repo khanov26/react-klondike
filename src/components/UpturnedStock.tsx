@@ -6,7 +6,7 @@ import UpturnedStockCard from "./UpturnedStockCard";
 import {getShortName} from "../store/deck/utils";
 
 const UpturnedStock: React.FC = () => {
-    const upturnedCards = useAppSelector(state => state.deck.stock.upturned);
+    const upturnedCards = useAppSelector(state => state.deck.present.stock.upturned);
 
     const lastTwoCards: Array<ICard | null> = Array(2)
         .fill(null)

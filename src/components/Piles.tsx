@@ -5,7 +5,7 @@ import Pile from "./Pile";
 import {PilePlace} from "../store/deck/types";
 
 const Piles: React.FC = () => {
-    const piles = useAppSelector(state => state.deck.piles);
+    const piles = useAppSelector(state => state.deck.present.piles);
 
     return (
         <Grid container alignItems={"flex-start"} spacing={2} columns={7}>

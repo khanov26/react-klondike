@@ -5,7 +5,7 @@ import Foundation from "./Foundation";
 import {FoundationPlace} from "../store/deck/types";
 
 const Foundations: React.FC = () => {
-    const foundations = useAppSelector(state => state.deck.foundations);
+    const foundations = useAppSelector(state => state.deck.present.foundations);
 
     return (
         <Grid container spacing={2} columns={4}>

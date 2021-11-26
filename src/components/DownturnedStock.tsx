@@ -6,7 +6,7 @@ import {openNextCard} from '../store/deck/deckSlice';
 
 const DownturnedStock: React.FC = () => {
     const dispatch = useAppDispatch();
-    const downturnedCards = useAppSelector(state => state.deck.stock.downturned);
+    const downturnedCards = useAppSelector(state => state.deck.present.stock.downturned);
 
     const handleClick = () => {
         dispatch(openNextCard());
