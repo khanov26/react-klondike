@@ -78,7 +78,7 @@ const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
             <Box sx={{
                 gridColumn: '1/1',
                 gridRow: '1/1',
-                mt: card.isUpturned ? 5 : 3,
+                mt: card.isUpturned ? '25%' : '15%',
             }}>
                 <PileBox cards={nextLevelCards} pileIndex={pileIndex}/>
             </Box>

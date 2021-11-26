@@ -9,24 +9,27 @@ import Controls from "./components/Controls";
 
 function App() {
     return (
-        <Container sx={{height: '100%', py: 2}}>
-            <Box sx={{my: 2}}>
-                <Controls/>
+        <Box className="game-container">
+            <Box className="play-zone">
+                <Box sx={{mb: 2}}>
+                    <Controls/>
+                </Box>
+
+                <Grid container columns={7} spacing={2}>
+                    <DndProvider backend={HTML5Backend}>
+                        <Grid item xs={3}>
+                            <Stock/>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Foundations/>
+                        </Grid>
+                        <Grid item xs={7}>
+                            <Piles/>
+                        </Grid>
+                    </DndProvider>
+                </Grid>
             </Box>
-            <Grid container columns={7} spacing={2}>
-                <DndProvider backend={HTML5Backend}>
-                    <Grid item xs={3}>
-                        <Stock/>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Foundations/>
-                    </Grid>
-                    <Grid item xs={7}>
-                        <Piles/>
-                    </Grid>
-                </DndProvider>
-            </Grid>
-        </Container>
+        </Box>
     );
 }
 
