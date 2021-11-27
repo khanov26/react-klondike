@@ -8,12 +8,6 @@ const store = configureStore({
     }
 });
 
-function logger() {
-    console.log(arguments);
-}
-
-store.subscribe(logger);
-
 export default store;
 
 export type RootState = ReturnType<typeof store.getState>;

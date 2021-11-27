@@ -1,11 +1,12 @@
 import React from 'react';
-import {Container, Grid, Box} from '@mui/material';
+import {Grid, Box} from '@mui/material';
 import Stock from './components/Stock';
 import Foundations from './components/Foundations';
 import Piles from './components/Piles';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from "react-dnd-html5-backend";
 import Controls from "./components/Controls";
+import WinModal from "./components/WinModal";
 
 function App() {
     return (
@@ -29,6 +30,8 @@ function App() {
                     </DndProvider>
                 </Grid>
             </Box>
+
+            <WinModal/>
         </Box>
     );
 }

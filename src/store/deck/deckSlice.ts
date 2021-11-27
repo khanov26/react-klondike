@@ -34,6 +34,7 @@ const deckSlice = createSlice({
                     moveFromStockToPile(state.stock.upturned, state.piles[to.index], cards);
                 } else if (to.type === 'foundation') {
                     moveFromStockToFoundation(state.stock.upturned, state.foundations[to.index], cards);
+                    state.win = checkIfWin(state.foundations);
                 }
             } else if (from.type === 'foundation') {
                 if (to.type === 'foundation') {
@@ -44,6 +45,7 @@ const deckSlice = createSlice({
             } else if (from.type === 'pile') {
                 if (to.type === 'foundation') {
                     moveFromPileToFoundation(state.piles[from.index], state.foundations[to.index], cards);
+                    state.win = checkIfWin(state.foundations);
                 } else if (to.type === 'pile') {
                     moveFromPileToPile(state.piles[from.index], state.piles[to.index], cards);
                 }
@@ -90,6 +92,7 @@ function getInitialState(): IDeckState {
             [],
             []
         ],
+        win: false,
     };
 }
 
@@ -193,9 +196,12 @@ function moveFromPileToPile(pileFrom: ICard[], pileTo: ICard[], cards: ICard[]) 
     }
 }
 
-
-
-
-
-
-
+function checkIfWin(foundations: IDeckState['foundations']): boolean {
+    for (let foundation of foundations) {
+        const foundationLastCard = foundation.length ? foundation[foundation.length - 1] : null;
+        if (foundationLastCard === null || foundationLastCard.rank !== 'K') {
+            return false;
+        }
+    }
+    return true;
+}

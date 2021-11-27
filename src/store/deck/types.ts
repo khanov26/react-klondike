@@ -5,21 +5,12 @@ export interface IDeckState {
         upturned: ICard[];
     };
     foundations: ICard[][];
+    win: boolean;
 }
 
 export interface MoveCardsPayload {
     cards: ICard[];
     from: FoundationPlace | PilePlace | StockPlace;
-    to: FoundationPlace | PilePlace;
-}
-
-export interface TakeCardPayload {
-    card: ICard;
-    from: FoundationPlace | PilePlace | StockPlace;
-}
-
-export interface PutCardPayload {
-    cards: ICard[];
     to: FoundationPlace | PilePlace;
 }
 
