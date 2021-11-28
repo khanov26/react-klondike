@@ -32,4 +32,4 @@ const Pile: React.FC<Props> = ({cards, index}) => {
     );
 };
 
-export default Pile;
+export default React.memo(Pile);

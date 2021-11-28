@@ -37,4 +37,4 @@ const Foundation: React.FC<Props> = ({cards, index}) => {
 
 };
 
-export default Foundation;
+export default React.memo(Foundation);
