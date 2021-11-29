@@ -7,8 +7,9 @@ interface Props {
 }
 
 const Card: React.FC<Props> = ({card}) => {
+    const cardShortName = getShortName(card);
     const cardImage = card.isUpturned ?
-        require(`../assets/images/cards/${getShortName(card)}.svg`).default :
+        require(`../assets/images/cards/${cardShortName}.svg`).default :
         require('../assets/images/cards/1B.svg').default;
 
     return (
