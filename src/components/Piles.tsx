@@ -8,7 +8,7 @@ const Piles: React.FC = () => {
     const piles = useAppSelector(state => state.deck.present.piles);
 
     return (
-        <Grid container alignItems={"flex-start"} spacing={2} columns={7}>
+        <Grid container alignItems="flex-start" spacing={2} columns={7}>
             {piles.map((pile, index) => (
                 <Grid item key={index} xs={1}>
                     <Pile cards={pile} index={index as PilePlace['index']} />

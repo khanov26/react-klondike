@@ -3,8 +3,7 @@ import {Box} from "@mui/material";
 import {ICard, PilePlace} from "../store/deck/types";
 import PileBox from "./PileBox";
 import {useDrop} from "react-dnd";
-import {useAppDispatch} from "../store/hooks";
-import {turnCard} from '../store/deck/deckSlice';
+import {canMoveToPile} from "../store/deck/gameRules";
 
 type Props = {
     cards: ICard[];
@@ -12,21 +11,20 @@ type Props = {
 };
 
 const Pile: React.FC<Props> = ({cards, index}) => {
-    const dispatch = useAppDispatch();
-
     const [, drop] = useDrop(() => ({
         accept: 'CARD',
         drop: (item): PilePlace => ({
             type: 'pile',
             index,
         }),
-    }));
+        canDrop: (item: ICard[]) => canMoveToPile(item, cards),
+    }), [cards]);
 
     return (
-        <Box ref={drop} onClick={() => dispatch(turnCard(index))}>
+        <Box ref={drop}>
             {cards.length > 0
                 ? <PileBox cards={cards} pileIndex={index}/>
-                : <Box className='empty-space'></Box>
+                : <Box className='empty-space'/>
             }
         </Box>
     );

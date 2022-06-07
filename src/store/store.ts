@@ -1,10 +1,12 @@
 import {configureStore} from "@reduxjs/toolkit";
 import deckReducer from "./deck/deckSlice";
+import gameReducer from "./game/gameSlice";
 import undoable from 'redux-undo';
 
 const store = configureStore({
     reducer: {
         deck: undoable(deckReducer),
+        game: gameReducer,
     }
 });
 

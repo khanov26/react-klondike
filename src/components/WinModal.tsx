@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {Box, Button, Paper, Typography} from '@mui/material';
-import {start} from '../store/deck/deckSlice';
+import {start, gameOver} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
+import {isGameOver} from "../store/deck/gameRules";
 
 const WinModal: React.FC = () => {
-    const win = useAppSelector(state => state.deck.present.win);
+    const isOver = useAppSelector(state => state.game.isOver);
+    const foundations = useAppSelector(state => state.deck.present.foundations);
     const dispatch = useAppDispatch();
 
     const handleNewGameButtonClick = () => {
@@ -13,9 +15,11 @@ const WinModal: React.FC = () => {
         dispatch(ActionCreators.clearHistory());
     };
 
-    if (!win) {
-        return null;
-    }
+    useEffect(() => {
+       if (isGameOver(foundations)) {
+           dispatch(gameOver());
+       }
+    }, [foundations, dispatch]);
 
     return (
         <Box sx={{
@@ -25,7 +29,7 @@ const WinModal: React.FC = () => {
             right: 0,
             bottom: 0,
             backgroundColor: 'rgba(0, 0, 0, .75)',
-            display: 'flex',
+            display: isOver ? 'flex' : 'none',
             justifyContent: 'center',
             alignItems: 'center',
         }}>

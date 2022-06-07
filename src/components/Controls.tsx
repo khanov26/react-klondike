@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Stack} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
-import {start, restart} from '../store/deck/deckSlice';
+import {start, restart} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
 
 const Controls: React.FC = () => {

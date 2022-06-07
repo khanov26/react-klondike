@@ -4,6 +4,7 @@ import {FoundationPlace, ICard} from "../store/deck/types";
 import {useDrop} from "react-dnd";
 import FoundationCard from "./FoundationCard";
 import {getShortName} from "../store/deck/utils";
+import {canMoveToFoundation} from "../store/deck/gameRules";
 
 type Props = {
     cards: ICard[];
@@ -20,7 +21,8 @@ const Foundation: React.FC<Props> = ({cards, index}) => {
             type: 'foundation',
             index
         }),
-    }));
+        canDrop: (item: ICard[]) => canMoveToFoundation(item, cards),
+    }), [cards]);
 
     const lastTwoCards: Array<ICard | null> = Array(2)
         .fill(null)

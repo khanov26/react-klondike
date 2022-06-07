@@ -4,7 +4,8 @@ import {Box} from "@mui/material";
 import Card from "./Card";
 import {useDrag} from "react-dnd";
 import {moveCards} from "../store/deck/deckSlice";
-import {useAppDispatch} from "../store/hooks";
+import {useAppDispatch, useAppSelector} from "../store/hooks";
+import {canMoveToFoundation} from "../store/deck/gameRules";
 
 type Props = {
     card: ICard | null;
@@ -18,8 +19,11 @@ const styles = {
 const UpturnedStockCard: React.FC<Props> = ({card}) => {
     const dispatch = useAppDispatch();
 
+    const foundations = useAppSelector(state => state.deck.present.foundations);
+
     const [{isDragging}, drag] = useDrag(() => ({
         type: 'CARD',
+        item: [card],
         canDrag: monitor => card !== null,
         collect: monitor => ({
             isDragging: monitor.isDragging(),
@@ -47,11 +51,15 @@ const UpturnedStockCard: React.FC<Props> = ({card}) => {
         };
 
         for (let foundationIndex = 0; foundationIndex < 4; foundationIndex++) {
-            const to: FoundationPlace = {
-                type: 'foundation',
-                index: foundationIndex as FoundationPlace['index'],
-            };
-            dispatch(moveCards({cards: [card as ICard], from, to}));
+            if (canMoveToFoundation([card as ICard], foundations[foundationIndex])) {
+                const to: FoundationPlace = {
+                    type: 'foundation',
+                    index: foundationIndex as FoundationPlace['index'],
+                };
+                dispatch(moveCards({cards: [card as ICard], from, to}));
+
+                break;
+            }
         }
     };
 
@@ -61,12 +69,8 @@ const UpturnedStockCard: React.FC<Props> = ({card}) => {
         );
     }
 
-    if (isDragging) {
-        return null;
-    }
-
     return (
-        <Box onDoubleClick={handleDoubleClick} ref={drag} sx={styles}>
+        <Box onDoubleClick={handleDoubleClick} ref={drag} sx={{...styles, visibility: isDragging ? 'hidden': 'visible'}}>
             <Card card={card}/>
         </Box>
     );

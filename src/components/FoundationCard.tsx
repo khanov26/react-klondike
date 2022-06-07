@@ -21,6 +21,7 @@ const FoundationCard: React.FC<Props> = ({card, foundationIndex}) => {
 
     const [{isDragging}, drag] = useDrag(() => ({
         type: 'CARD',
+        item: [card],
         canDrag: monitor => card !== null,
         collect: monitor => ({
             isDragging: monitor.isDragging()
@@ -47,12 +48,8 @@ const FoundationCard: React.FC<Props> = ({card, foundationIndex}) => {
         return <Box className="empty-space empty-space--with-border" style={styles} />
     }
 
-    if (isDragging) {
-        return null;
-    }
-
     return (
-        <Box ref={drag} style={styles}>
+        <Box ref={drag} style={styles} sx={{visibility: isDragging ? 'hidden' : 'visible'}}>
             <Card card={card}/>
         </Box>
     );

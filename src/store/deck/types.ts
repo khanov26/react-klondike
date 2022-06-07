@@ -5,7 +5,6 @@ export interface IDeckState {
         upturned: ICard[];
     };
     foundations: ICard[][];
-    win: boolean;
 }
 
 export interface MoveCardsPayload {
