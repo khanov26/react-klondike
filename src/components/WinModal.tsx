@@ -4,10 +4,12 @@ import {Box, Button, Paper, Typography} from '@mui/material';
 import {start, gameOver} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
 import {isGameOver} from "../store/deck/gameRules";
+import {formatTime} from "../store/game/time";
 
 const WinModal: React.FC = () => {
     const isOver = useAppSelector(state => state.game.isOver);
     const foundations = useAppSelector(state => state.deck.present.foundations);
+    const time = useAppSelector(state => state.game.time);
     const dispatch = useAppDispatch();
 
     const handleNewGameButtonClick = () => {
@@ -37,11 +39,17 @@ const WinModal: React.FC = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                p: 2,
+                p: 4,
             }}>
                 <Typography variant="h3">
                     Поздравляю! Вы выиграли!
                 </Typography>
+
+                {time > 0 &&
+                <Typography sx={{mt: 2}}>
+                    Ваше время: {formatTime(time)}
+                </Typography>
+                }
 
                 <Button variant="contained" sx={{mt: 2}} onClick={handleNewGameButtonClick}>
                     Начать новую игру

@@ -7,13 +7,19 @@ import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from "react-dnd-html5-backend";
 import Controls from "./components/Controls";
 import WinModal from "./components/WinModal";
+import Timer from "./components/Timer";
 
 function App() {
     return (
         <Box className="game-container">
             <Box className="play-zone">
-                <Box sx={{mb: 2}}>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 2,
+                }}>
                     <Controls/>
+                    <Timer/>
                 </Box>
 
                 <Grid container columns={7} spacing={2}>

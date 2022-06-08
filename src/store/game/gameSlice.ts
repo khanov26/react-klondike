@@ -3,6 +3,7 @@ import {createSlice, AnyAction} from "@reduxjs/toolkit";
 const initialState = {
     isOver: false,
     isNewGame: true,
+    time: 0,
 };
 
 const startGame = () => {
@@ -19,6 +20,9 @@ const gameSlice = createSlice({
         restart: startGame,
         gameOver: state => {
             state.isOver = true;
+        },
+        incrementTime: state => {
+            state.time = state.time + 1;
         }
     },
     extraReducers: builder => {
@@ -30,4 +34,4 @@ const gameSlice = createSlice({
 
 export default gameSlice.reducer;
 
-export const {start, restart, gameOver} = gameSlice.actions;
+export const {start, restart, gameOver, incrementTime} = gameSlice.actions;
