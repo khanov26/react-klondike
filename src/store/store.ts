@@ -5,7 +5,7 @@ import undoable from 'redux-undo';
 
 const store = configureStore({
     reducer: {
-        deck: undoable(deckReducer),
+        deck: undoable(deckReducer, {limit: 10}),
         game: gameReducer,
     }
 });

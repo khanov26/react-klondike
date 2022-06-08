@@ -18,4 +18,4 @@ const Piles: React.FC = () => {
     );
 };
 
-export default Piles;
+export default React.memo(Piles);

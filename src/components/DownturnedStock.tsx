@@ -19,17 +19,25 @@ const DownturnedStock: React.FC = () => {
         }
     };
 
+    const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+    };
+
     if (downturnedCards.length !== 0) {
         const card = downturnedCards[downturnedCards.length - 1];
         return (
-            <Box onClick={handleStockClick}>
+            <Box onClick={handleStockClick} onDoubleClick={handleDoubleClick}>
                 <Card card={card}/>
             </Box>
         );
     }
 
     return (
-        <Box onClick={handleEmptyStockClick} className="empty-space empty-space--with-border"/>
+        <Box
+            onClick={handleEmptyStockClick}
+            onDoubleClick={handleDoubleClick}
+            className="empty-space empty-space--with-border"
+        />
     );
 };
 

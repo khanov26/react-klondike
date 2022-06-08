@@ -14,7 +14,7 @@ const Timer: React.FC = () => {
     useEffect(() => {
         let timerId: number;
         if (!isGameOver && !isNewGame) {
-            timerId = window.setInterval(() => dispatch(incrementTime()), 1000);
+            timerId = window.setInterval(() => dispatch(incrementTime(1)), 1000);
         }
 
         return () => window.clearInterval(timerId);

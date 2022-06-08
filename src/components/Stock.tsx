@@ -17,4 +17,4 @@ const Stock: React.FC = () => {
     );
 };
 
-export default Stock;
+export default React.memo(Stock);

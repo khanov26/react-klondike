@@ -45,7 +45,9 @@ const UpturnedStockCard: React.FC<Props> = ({card}) => {
         },
     }), [card]);
 
-    const handleDoubleClick = () => {
+    const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+
         const from: StockPlace = {
             type: 'stock',
         };

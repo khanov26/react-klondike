@@ -1,4 +1,4 @@
-import {createSlice, AnyAction} from "@reduxjs/toolkit";
+import {createSlice, AnyAction, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState = {
     isOver: false,
@@ -21,8 +21,8 @@ const gameSlice = createSlice({
         gameOver: state => {
             state.isOver = true;
         },
-        incrementTime: state => {
-            state.time = state.time + 1;
+        incrementTime: (state, action: PayloadAction<number>) => {
+            state.time = state.time + action.payload;
         }
     },
     extraReducers: builder => {

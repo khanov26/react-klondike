@@ -36,4 +36,4 @@ const Controls: React.FC = () => {
     );
 };
 
-export default Controls;
+export default React.memo(Controls);

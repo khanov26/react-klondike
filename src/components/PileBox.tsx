@@ -45,7 +45,9 @@ const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
         },
     }), [cards]);
 
-    const handleDoubleClick = () => {
+    const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+
         if (cards.length > 1) {
             return;
         }

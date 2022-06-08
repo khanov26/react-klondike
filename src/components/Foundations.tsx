@@ -18,4 +18,4 @@ const Foundations: React.FC = () => {
     );
 };
 
-export default Foundations;
+export default React.memo(Foundations);

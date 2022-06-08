@@ -44,12 +44,26 @@ const FoundationCard: React.FC<Props> = ({card, foundationIndex}) => {
         },
     }), [card]);
 
+    const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+    };
+
     if (card === null) {
-        return <Box className="empty-space empty-space--with-border" style={styles} />
+        return (
+            <Box
+                className="empty-space empty-space--with-border"
+                style={styles}
+                onDoubleClick={handleDoubleClick}
+            />
+        );
     }
 
     return (
-        <Box ref={drag} style={styles} sx={{visibility: isDragging ? 'hidden' : 'visible'}}>
+        <Box ref={drag}
+             style={styles}
+             sx={{visibility: isDragging ? 'hidden' : 'visible'}}
+             onDoubleClick={handleDoubleClick}
+        >
             <Card card={card}/>
         </Box>
     );

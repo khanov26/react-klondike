@@ -59,4 +59,4 @@ const WinModal: React.FC = () => {
     );
 };
 
-export default WinModal;
+export default React.memo(WinModal);
