@@ -1,10 +1,19 @@
 import React from 'react';
-import {Button, Stack} from "@mui/material";
+import {Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList} from "@mui/material";
+import {Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Undo} from "@mui/icons-material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {start, restart} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
 
 const Controls: React.FC = () => {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const handleMenuIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
     const dispatch = useAppDispatch();
 
     const canUndo = useAppSelector(state => state.deck.past.length > 0);
@@ -21,18 +30,46 @@ const Controls: React.FC = () => {
     };
 
     return (
-        <Stack direction="row" spacing={3}>
-            <Button variant="contained" onClick={handleNewGameButtonClick}>Новая игра</Button>
-            <Button variant="contained" onClick={handleTryAgainButtonClick}>Попробовать снова</Button>
-            <Button variant="contained" disabled={!canUndo}
-                    onClick={() => dispatch(ActionCreators.undo())}>
-                Отменить ход
-            </Button>
-            <Button variant="contained" disabled={!canRedo}
-                    onClick={() => dispatch(ActionCreators.redo())}>
-                Повторить ход
-            </Button>
-        </Stack>
+        <>
+            <IconButton onClick={handleMenuIconClick}>
+                <MenuIcon sx={{color: 'white'}}/>
+            </IconButton>
+            <Menu
+                id="app-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                onClick={handleMenuClose}
+            >
+                <MenuList>
+                    <MenuItem onClick={handleNewGameButtonClick}>
+                        <ListItemIcon>
+                            <PowerSettingsNew/>
+                        </ListItemIcon>
+                        <ListItemText>Новая игра</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={handleTryAgainButtonClick}>
+                        <ListItemIcon>
+                            <Replay/>
+                        </ListItemIcon>
+                        <ListItemText>Попробовать снова</ListItemText>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem onClick={() => dispatch(ActionCreators.undo())} disabled={!canUndo}>
+                        <ListItemIcon>
+                            <Undo/>
+                        </ListItemIcon>
+                        <ListItemText>Отменить ход</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => dispatch(ActionCreators.redo())} disabled={!canRedo}>
+                        <ListItemIcon>
+                            <Redo/>
+                        </ListItemIcon>
+                        <ListItemText> Повторить ход</ListItemText>
+                    </MenuItem>
+                </MenuList>
+            </Menu>
+        </>
     );
 };
 
