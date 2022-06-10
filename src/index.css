@@ -11,20 +11,6 @@
     background-color: darkgreen;
 }
 
-.game-container {
-    height: 100%;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    display: flex;
-    justify-content: center;
-}
-
-.play-zone {
-    max-width: 1200px;
-    max-height: calc(100vh - 3rem);
-    aspect-ratio: 15 / 12;
-}
-
 .card {
     display: flex;
     width: 100%;
@@ -43,5 +29,11 @@
 
 .empty-space--with-border {
     border: 2px solid gray;
-    border-radius: 10px;
+    border-radius: 6% / 5%;
+}
+
+@media screen and (max-width: 767px) {
+    .empty-space--with-border {
+        border-width: 1px;
+    }
 }

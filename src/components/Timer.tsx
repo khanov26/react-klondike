@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import {Typography} from "@mui/material";
+import {Typography, useMediaQuery} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {formatTime} from "../store/game/time";
 import {incrementTime} from "../store/game/gameSlice";
+import {isDesktopQuery, isTabletQuery} from "../mediaQueries";
 
 const Timer: React.FC = () => {
     const isGameOver = useAppSelector(state => state.game.isOver);
@@ -20,8 +21,17 @@ const Timer: React.FC = () => {
         return () => window.clearInterval(timerId);
     }, [isGameOver, isNewGame, dispatch]);
 
+    const isDesktop = useMediaQuery(isDesktopQuery);
+    const isTablet = useMediaQuery(isTabletQuery);
+    let fontSize;
+    if (isDesktop || isTablet) {
+        fontSize = '1.5rem';
+    } else {
+        fontSize = '1rem';
+    }
+
     return (
-        <Typography variant="h5" sx={{color: 'white'}}>
+        <Typography component="span" sx={{color: 'white', fontSize}}>
             {formatTime(time)}
         </Typography>
     );

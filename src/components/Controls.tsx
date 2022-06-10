@@ -1,9 +1,10 @@
 import React from 'react';
-import {Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList} from "@mui/material";
+import {Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, useMediaQuery} from "@mui/material";
 import {Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Undo} from "@mui/icons-material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {start, restart} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
+import {isDesktopQuery, isTabletQuery} from "../mediaQueries";
 
 const Controls: React.FC = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -29,10 +30,19 @@ const Controls: React.FC = () => {
         dispatch(ActionCreators.clearHistory());
     };
 
+    const isDesktop = useMediaQuery(isDesktopQuery);
+    const isTablet = useMediaQuery(isTabletQuery);
+    let fontSize: 'small' | 'medium' | 'large';
+    if (isDesktop || isTablet) {
+        fontSize = 'medium';
+    } else {
+        fontSize = 'small';
+    }
+
     return (
         <>
-            <IconButton onClick={handleMenuIconClick}>
-                <MenuIcon sx={{color: 'white'}}/>
+            <IconButton onClick={handleMenuIconClick} size={fontSize}>
+                <MenuIcon sx={{color: 'white'}} fontSize={fontSize}/>
             </IconButton>
             <Menu
                 id="app-menu"

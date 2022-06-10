@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Grid, Box} from '@mui/material';
+import {Grid, Box, useMediaQuery, Stack} from '@mui/material';
 import Stock from './components/Stock';
 import Foundations from './components/Foundations';
 import Piles from './components/Piles';
@@ -13,6 +13,8 @@ import {canMoveToFoundation} from "./store/deck/gameRules";
 import {FoundationPlace, PilePlace, StockPlace} from "./store/deck/types";
 import {moveCards} from "./store/deck/deckSlice";
 import {incrementTime} from "./store/game/gameSlice";
+import {isDesktopQuery, isLandscapeQuery} from "./mediaQueries";
+import {TouchBackend} from "react-dnd-touch-backend";
 
 function App() {
     const {piles, foundations, stock: {upturned}} = useAppSelector(state => state.deck.present);
@@ -96,32 +98,67 @@ function App() {
         return movedFromPiles;
     };
 
+    const isTouchDevice = useMediaQuery('(pointer: coarse)');
+
+    const isDesktop = useMediaQuery(isDesktopQuery);
+    const isLandscape = useMediaQuery(isLandscapeQuery);
+
     return (
-        <Box className="game-container" onDoubleClick={handleDoubleClick}>
-            <Box className="play-zone">
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mb: 2,
-                }}>
+        <Box className="game-container" onDoubleClick={handleDoubleClick} sx={{
+            height: '100%',
+            p: '12px',
+            display: 'flex',
+            justifyContent: 'center',
+        }}>
+            <Stack
+                spacing={2}
+                direction={isDesktop || !isLandscape ? 'column' : 'row'}
+                sx={{
+                    maxWidth: 'min(1200px, 100%)',
+                    maxHeight: 'calc(100vh - 24px)',
+                    aspectRatio: isDesktop || !isLandscape ? '100 / 95' : '115 / 95',
+                }}
+            >
+                <Stack
+                    direction={isDesktop || !isLandscape ? 'row' : 'column'}
+                    justifyContent="space-between"
+                >
                     <Controls/>
                     <Timer/>
-                </Box>
+                </Stack>
 
-                <Grid container columns={7} spacing={2}>
-                    <DndProvider backend={HTML5Backend}>
-                        <Grid item xs={3}>
-                            <Stock/>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Foundations/>
-                        </Grid>
-                        <Grid item xs={7}>
-                            <Piles/>
-                        </Grid>
-                    </DndProvider>
-                </Grid>
-            </Box>
+                <Box>
+                    <Grid container columns={7} spacing={'1%'}>
+                        {isTouchDevice &&
+                        <DndProvider backend={TouchBackend}>
+                            <Grid item xs={3}>
+                                <Stock/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Foundations/>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Piles/>
+                            </Grid>
+                        </DndProvider>
+                        }
+
+                        {!isTouchDevice &&
+                        <DndProvider backend={HTML5Backend}>
+                            <Grid item xs={3}>
+                                <Stock/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Foundations/>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Piles/>
+                            </Grid>
+                        </DndProvider>
+                        }
+                    </Grid>
+                </Box>
+            </Stack>
 
             <WinModal/>
         </Box>
