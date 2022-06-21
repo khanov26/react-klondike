@@ -3,8 +3,6 @@ import {Grid, Box, useMediaQuery, Stack} from '@mui/material';
 import Stock from './components/Stock';
 import Foundations from './components/Foundations';
 import Piles from './components/Piles';
-import {DndProvider} from 'react-dnd';
-import {HTML5Backend} from "react-dnd-html5-backend";
 import Controls from "./components/Controls";
 import WinModal from "./components/WinModal";
 import Timer from "./components/Timer";
@@ -14,7 +12,6 @@ import {FoundationPlace, PilePlace, StockPlace} from "./store/deck/types";
 import {moveCards} from "./store/deck/deckSlice";
 import {incrementTime} from "./store/game/gameSlice";
 import {isDesktopQuery, isLandscapeQuery} from "./mediaQueries";
-import {TouchBackend} from "react-dnd-touch-backend";
 
 function App() {
     const {piles, foundations, stock: {upturned}} = useAppSelector(state => state.deck.present);
@@ -98,8 +95,6 @@ function App() {
         return movedFromPiles;
     };
 
-    const isTouchDevice = useMediaQuery('(pointer: coarse)');
-
     const isDesktop = useMediaQuery(isDesktopQuery);
     const isLandscape = useMediaQuery(isLandscapeQuery);
 
@@ -129,33 +124,15 @@ function App() {
 
                 <Box>
                     <Grid container columns={7} spacing={'1%'}>
-                        {isTouchDevice &&
-                        <DndProvider backend={TouchBackend}>
-                            <Grid item xs={3}>
-                                <Stock/>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Foundations/>
-                            </Grid>
-                            <Grid item xs={7}>
-                                <Piles/>
-                            </Grid>
-                        </DndProvider>
-                        }
-
-                        {!isTouchDevice &&
-                        <DndProvider backend={HTML5Backend}>
-                            <Grid item xs={3}>
-                                <Stock/>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Foundations/>
-                            </Grid>
-                            <Grid item xs={7}>
-                                <Piles/>
-                            </Grid>
-                        </DndProvider>
-                        }
+                        <Grid item xs={3}>
+                            <Stock/>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Foundations/>
+                        </Grid>
+                        <Grid item xs={7}>
+                            <Piles/>
+                        </Grid>
                     </Grid>
                 </Box>
             </Stack>

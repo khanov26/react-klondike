@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {FoundationPlace, ICard, MoveCardsPayload, PilePlace} from "../store/deck/types";
 import {Box} from "@mui/material";
 import Card from "./Card";
-import {useAppDispatch} from "../store/hooks";
-import {useDrag} from "react-dnd";
+import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {moveCards} from '../store/deck/deckSlice';
+import {useDrag} from "../hooks/dragndrop";
+import {canMoveToFoundation, canMoveToPile} from "../store/deck/gameRules";
 
 type Props = {
     card: ICard | null;
@@ -19,30 +20,54 @@ const styles = {
 const FoundationCard: React.FC<Props> = ({card, foundationIndex}) => {
     const dispatch = useAppDispatch();
 
-    const [{isDragging}, drag] = useDrag(() => ({
-        type: 'CARD',
-        item: [card],
-        canDrag: monitor => card !== null,
-        collect: monitor => ({
-            isDragging: monitor.isDragging()
-        }),
-        end: (item, monitor) => {
-            const to = monitor.getDropResult();
-            if (to === null) {
-                return;
-            }
+    const foundations = useAppSelector(state => state.deck.present.foundations);
+    const piles = useAppSelector(state => state.deck.present.piles);
 
-            const payload: MoveCardsPayload = {
-                cards: [card as ICard],
-                from: {
-                    type: 'foundation',
-                    index: foundationIndex,
-                },
-                to: to as PilePlace | FoundationPlace,
-            };
-            dispatch(moveCards(payload));
-        },
-    }), [card]);
+    const handleDrag = useCallback((destinationId: string) => {
+        if (card === null) {
+            return;
+        }
+
+        const destination = destinationId.split('-');
+        const destinationType = destination[0];
+        const destinationIndex = Number(destination[1]);
+        let to: PilePlace | FoundationPlace | undefined;
+        switch (destinationType) {
+            case 'pile':
+                if (canMoveToPile([card], piles[destinationIndex])) {
+                    to = {
+                        type: 'pile',
+                        index: destinationIndex as PilePlace['index'],
+                    };
+                }
+                break;
+            case 'foundation':
+                if (canMoveToFoundation([card], foundations[destinationIndex])) {
+                    to = {
+                        type: 'foundation',
+                        index: destinationIndex as FoundationPlace['index'],
+                    };
+                }
+                break;
+        }
+        if (to === undefined) {
+            return;
+        }
+
+        const payload: MoveCardsPayload = {
+            cards: [card],
+            from: {
+                type: 'foundation',
+                index: foundationIndex,
+            },
+            to: to as PilePlace | FoundationPlace,
+        };
+        dispatch(moveCards(payload));
+    }, [card, dispatch, foundationIndex, foundations, piles]);
+
+    const canDrag = card !== null && card.isUpturned;
+
+    const dragRef = useDrag(canDrag, handleDrag);
 
     const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
         event.stopPropagation();
@@ -59,11 +84,7 @@ const FoundationCard: React.FC<Props> = ({card, foundationIndex}) => {
     }
 
     return (
-        <Box ref={drag}
-             style={styles}
-             sx={{visibility: isDragging ? 'hidden' : 'visible'}}
-             onDoubleClick={handleDoubleClick}
-        >
+        <Box ref={dragRef} style={styles} onDoubleClick={handleDoubleClick}>
             <Card card={card}/>
         </Box>
     );

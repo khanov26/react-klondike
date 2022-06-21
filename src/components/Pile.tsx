@@ -2,8 +2,7 @@ import React from 'react';
 import {Box} from "@mui/material";
 import {ICard, PilePlace} from "../store/deck/types";
 import PileBox from "./PileBox";
-import {useDrop} from "react-dnd";
-import {canMoveToPile} from "../store/deck/gameRules";
+import {useDrop} from "../hooks/dragndrop";
 
 type Props = {
     cards: ICard[];
@@ -11,17 +10,10 @@ type Props = {
 };
 
 const Pile: React.FC<Props> = ({cards, index}) => {
-    const [, drop] = useDrop(() => ({
-        accept: 'CARD',
-        drop: (item): PilePlace => ({
-            type: 'pile',
-            index,
-        }),
-        canDrop: (item: ICard[]) => canMoveToPile(item, cards),
-    }), [cards]);
+    const {droppableProps} = useDrop(`pile-${index}`);
 
     return (
-        <Box ref={drop}>
+        <Box {...droppableProps}>
             {cards.length > 0
                 ? <PileBox cards={cards} pileIndex={index}/>
                 : <Box className='empty-space'/>
