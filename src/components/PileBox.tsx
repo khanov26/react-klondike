@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {FoundationPlace, ICard, MoveCardsPayload, PilePlace} from "../store/deck/types";
 import {Box} from "@mui/material";
 import Card from "./Card";
@@ -14,7 +14,7 @@ type Props = {
 
 const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
     const card = cards[0];
-    const nextLevelCards = cards.slice(1);
+    const nextLevelCards = useMemo(() => cards.slice(1), [cards]);
 
     const foundations = useAppSelector(state => state.deck.present.foundations);
     const piles = useAppSelector(state => state.deck.present.piles);
@@ -88,7 +88,7 @@ const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
         }
     };
 
-    const handleClick = () => {
+    const handleTurnCard = useCallback(() => {
         if (cards.length > 1) {
             return;
         }
@@ -99,13 +99,20 @@ const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
         }
 
         dispatch(turnCard(pileIndex));
-    };
+    }, [cards, dispatch, pileIndex]);
+
+    const autoOpen = useAppSelector(state => state.game.autoOpen);
+    useEffect(() => {        
+        if (autoOpen) {
+            handleTurnCard();
+        }
+    }, [autoOpen, handleTurnCard]);
 
     return (
         <Box ref={dragRef} sx={{
             display: 'grid',
         }}>
-            <Box onDoubleClick={handleDoubleClick} onClick={handleClick} sx={{
+            <Box onDoubleClick={handleDoubleClick} onClick={handleTurnCard} sx={{
                 gridColumn: '1/1',
                 gridRow: '1/1',
             }}>

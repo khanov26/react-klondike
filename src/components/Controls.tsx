@@ -1,8 +1,8 @@
 import React from 'react';
 import {Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, useMediaQuery} from "@mui/material";
-import {Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Undo} from "@mui/icons-material";
+import {Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Settings, Undo} from "@mui/icons-material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
-import {start, restart} from '../store/game/gameSlice';
+import {start, restart, openPrefences, incrementTime} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
 import {isDesktopQuery, isTabletQuery} from "../mediaQueries";
 
@@ -17,9 +17,21 @@ const Controls: React.FC = () => {
 
     const dispatch = useAppDispatch();
 
-    const canUndo = useAppSelector(state => state.deck.past.length > 0);
-    const canRedo = useAppSelector(state => state.deck.future.length > 0);
+    const undoAvailable = useAppSelector(state => state.game.undoAvailable);
 
+    const canUndo = useAppSelector(state => state.deck.past.length > 0) && undoAvailable;
+    const canRedo = useAppSelector(state => state.deck.future.length > 0) && undoAvailable;
+
+    const handleUndoClick = () => {
+        dispatch(ActionCreators.undo());
+        dispatch(incrementTime(5));
+    };
+
+    const handleRedoClick = () => {
+        dispatch(ActionCreators.redo());
+        dispatch(incrementTime(5));
+    };
+    
     const handleNewGameButtonClick = () => {
         dispatch(start());
         dispatch(ActionCreators.clearHistory());
@@ -65,17 +77,24 @@ const Controls: React.FC = () => {
                         <ListItemText>Попробовать снова</ListItemText>
                     </MenuItem>
                     <Divider/>
-                    <MenuItem onClick={() => dispatch(ActionCreators.undo())} disabled={!canUndo}>
+                    <MenuItem onClick={handleUndoClick} disabled={!canUndo}>
                         <ListItemIcon>
                             <Undo/>
                         </ListItemIcon>
                         <ListItemText>Отменить ход</ListItemText>
                     </MenuItem>
-                    <MenuItem onClick={() => dispatch(ActionCreators.redo())} disabled={!canRedo}>
+                    <MenuItem onClick={handleRedoClick} disabled={!canRedo}>
                         <ListItemIcon>
                             <Redo/>
                         </ListItemIcon>
                         <ListItemText> Повторить ход</ListItemText>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem onClick={() => dispatch(openPrefences())}>
+                        <ListItemIcon>
+                            <Settings/>
+                        </ListItemIcon>
+                        <ListItemText>Настройки</ListItemText>
                     </MenuItem>
                 </MenuList>
             </Menu>
