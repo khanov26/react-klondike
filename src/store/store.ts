@@ -7,7 +7,16 @@ const store = configureStore({
     reducer: {
         deck: undoable(deckReducer, {
             limit: 10, 
-            filter: includeAction(['deck/openNextCard', 'deck/turnStock', 'deck/moveCards']),
+            filter: includeAction([
+                'deck/openNextCard', 
+                'deck/turnStock', 
+                'deck/moveFromFoundationToFoundation',
+                'deck/moveFromFoundationToPile',
+                'deck/moveFromPileToFoundation',
+                'deck/moveFromPileToPile',
+                'deck/moveFromStockToFoundation',
+                'deck/moveFromStockToPile',
+            ]),
         }),
         game: gameReducer,
     }

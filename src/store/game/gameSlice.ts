@@ -4,6 +4,7 @@ const initialState = Object.assign({
     isOver: false,
     isNewGame: true,
     time: 0,
+    finishTime: 0,
     isPreferencesOpen: false,
     timeControl: true,
     autoMove: true,
@@ -15,6 +16,7 @@ const startGame: CaseReducer<typeof initialState> = (state) => {
     state.isOver = false;
     state.isNewGame = true;
     state.time = 0;
+    state.finishTime = 0;
 };
 
 const isDeckAction = (action: AnyAction) => action.type.startsWith('deck/');
@@ -27,6 +29,7 @@ const gameSlice = createSlice({
         restart: startGame,
         gameOver: state => {
             state.isOver = true;
+            state.finishTime = state.time;
         },
         incrementTime: (state, action: PayloadAction<number>) => {
             state.time = state.time + action.payload;

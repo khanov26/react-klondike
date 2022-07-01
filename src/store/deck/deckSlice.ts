@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {shuffle} from "lodash";
-import {ICard, IDeckState, MoveCardsPayload} from "./types";
+import {ICard, IDeckState} from "./types";
 import {orderedDeck} from "./utils";
 
 let initialState = getInitialState();
@@ -24,28 +24,41 @@ const deckSlice = createSlice({
             });
             stock.upturned = [];
         },
-        moveCards: (state, action: PayloadAction<MoveCardsPayload>) => {
-            const {cards, from, to} = action.payload;
-
-            if (from.type === 'stock') {
-                if (to.type === 'pile') {
-                    moveFromStockToPile(state.stock.upturned, state.piles[to.index]);
-                } else if (to.type === 'foundation') {
-                    moveFromStockToFoundation(state.stock.upturned, state.foundations[to.index]);
-                }
-            } else if (from.type === 'foundation') {
-                if (to.type === 'foundation') {
-                    moveFromFoundationToFoundation(state.foundations[from.index], state.foundations[to.index]);
-                } else if (to.type === 'pile') {
-                    moveFromFoundationToPile(state.foundations[from.index], state.piles[to.index]);
-                }
-            } else if (from.type === 'pile') {
-                if (to.type === 'foundation') {
-                    moveFromPileToFoundation(state.piles[from.index], state.foundations[to.index]);
-                } else if (to.type === 'pile') {
-                    moveFromPileToPile(state.piles[from.index], state.piles[to.index], cards);
-                }
-            }
+        moveFromStockToPile: (state, action: PayloadAction<number>) => {
+            const card = state.stock.upturned.pop() as ICard;
+            const pileIndex = action.payload;
+            state.piles[pileIndex].push(card);
+        },
+        moveFromStockToFoundation: (state, action: PayloadAction<number>) => {
+            const card = state.stock.upturned.pop() as ICard;
+            const foundationIndex = action.payload;
+            state.foundations[foundationIndex].push(card);
+        },
+        moveFromFoundationToFoundation: (state, action: PayloadAction<{fromIndex: number, toIndex: number}>) => {
+            const {fromIndex, toIndex} = action.payload;
+            const card = state.foundations[fromIndex].pop() as ICard;
+            state.foundations[toIndex].push(card);
+        },
+        moveFromFoundationToPile: (state, action: PayloadAction<{fromIndex: number, toIndex: number}>) => {
+            const {fromIndex, toIndex} = action.payload;
+            const card = state.foundations[fromIndex].pop() as ICard;
+            state.piles[toIndex].push(card);
+        },
+        moveFromPileToFoundation: (state, action: PayloadAction<{fromIndex: number, toIndex: number}>) => {
+            const {fromIndex, toIndex} = action.payload;
+            const card = state.piles[fromIndex].pop() as ICard;
+            state.foundations[toIndex].push(card);
+        },
+        moveFromPileToPile: (state, action: PayloadAction<{fromIndex: number, toIndex: number, cards: ICard[]}>) => {
+            const {fromIndex, toIndex, cards} = action.payload;
+            const movingFirstCard = cards[0];
+            const pileFrom = state.piles[fromIndex];
+            const pileTo = state.piles[toIndex];
+            const movingFirstCardIndex = pileFrom.findIndex(curCard =>
+                curCard.suit === movingFirstCard.suit && curCard.rank === movingFirstCard.rank
+            );
+            pileFrom.splice(movingFirstCardIndex, 52);
+            pileTo.push(...cards);
         },
         turnCard: (state, action: PayloadAction<number>) => {
             const pileIndex = action.payload;
@@ -65,7 +78,17 @@ const deckSlice = createSlice({
 });
 
 export default deckSlice.reducer;
-export const {openNextCard, turnStock, moveCards, turnCard} = deckSlice.actions;
+export const {
+    openNextCard,
+    turnStock,
+    turnCard,
+    moveFromFoundationToFoundation,
+    moveFromFoundationToPile,
+    moveFromPileToFoundation,
+    moveFromPileToPile,
+    moveFromStockToFoundation,
+    moveFromStockToPile,
+} = deckSlice.actions;
 
 function getInitialState(): IDeckState {
     const shuffledDeck = shuffle(orderedDeck);
@@ -94,38 +117,4 @@ function getInitialState(): IDeckState {
             []
         ]
     };
-}
-
-function moveFromStockToPile(stock: ICard[], pile: ICard[]) {
-    const card = stock.pop() as ICard;
-    pile.push(card);
-}
-
-function moveFromStockToFoundation(stock: ICard[], foundation: ICard[]) {
-    const card = stock.pop() as ICard;
-    foundation.push(card);
-}
-
-function moveFromFoundationToFoundation(foundationFrom: ICard[], foundationTo: ICard[]) {
-    const card = foundationFrom.pop() as ICard;
-    foundationTo.push(card);
-}
-
-function moveFromFoundationToPile(foundation: ICard[], pile: ICard[]) {
-    const card = foundation.pop() as ICard;
-    pile.push(card);
-}
-
-function moveFromPileToFoundation(pile: ICard[], foundation: ICard[]) {
-    const card = pile.pop() as ICard;
-    foundation.push(card);
-}
-
-function moveFromPileToPile(pileFrom: ICard[], pileTo: ICard[], cards: ICard[]) {
-    const movingFirstCard = cards[0];
-    const movingFirstCardIndex = pileFrom.findIndex(curCard =>
-        curCard.suit === movingFirstCard.suit && curCard.rank === movingFirstCard.rank
-    );
-    pileFrom.splice(movingFirstCardIndex, 52);
-    pileTo.push(...cards);
 }

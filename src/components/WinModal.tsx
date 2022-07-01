@@ -1,27 +1,19 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {Box, Button, Paper, Typography} from '@mui/material';
-import {start, gameOver} from '../store/game/gameSlice';
+import {start} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
-import {isGameOver} from "../store/deck/gameRules";
 import {formatTime} from "../store/game/time";
 
 const WinModal: React.FC = () => {
     const isOver = useAppSelector(state => state.game.isOver);
-    const foundations = useAppSelector(state => state.deck.present.foundations);
-    const time = useAppSelector(state => state.game.time);
+    const time = useAppSelector(state => state.game.finishTime);
     const dispatch = useAppDispatch();
 
     const handleNewGameButtonClick = () => {
         dispatch(start());
         dispatch(ActionCreators.clearHistory());
     };
-
-    useEffect(() => {
-       if (isGameOver(foundations)) {
-           dispatch(gameOver());
-       }
-    }, [foundations, dispatch]);
 
     return (
         <Box sx={{

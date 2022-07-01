@@ -1,27 +1,10 @@
 import {useEffect, useRef} from "react";
+import { useDragDrop } from "./context";
+import { DragHookProps } from "./types";
 
-const getDroppableIdFromPoint = (x: number, y: number) => {
-    const elements = document.elementsFromPoint(x, y);
-
-    for (let element of elements) {
-        if ((element as HTMLElement).dataset.droppableId) {
-            return (element as HTMLElement).dataset.droppableId as string;
-        }
-    }
-    return null;
-};
-
-export const useDrop = (droppableId: string) => {
-
-    const droppableProps = {
-        'data-droppable-id': droppableId,
-    };
-
-    return {droppableProps};
-};
-
-export const useDrag = (canDrag: boolean, onDragEnd: (destinationId: string) => void) => {
+export default function useDrag({canDrag, sourceId, data}: DragHookProps) {
     const dragRef = useRef<HTMLElement>(null);
+    const {onDragEnd} = useDragDrop();
 
     useEffect(() => {
         const dragEl = dragRef.current;
@@ -111,7 +94,7 @@ export const useDrag = (canDrag: boolean, onDragEnd: (destinationId: string) => 
             dragEl.style.zIndex = '';
             const destinationId = getDroppableIdFromPoint(clientX, clientY);
             if (destinationId) {
-                onDragEnd(destinationId);
+                onDragEnd(sourceId, destinationId, data);
             }
         };
 
@@ -122,7 +105,18 @@ export const useDrag = (canDrag: boolean, onDragEnd: (destinationId: string) => 
             dragEl.removeEventListener('mousedown', onMouseDown);
             dragEl.removeEventListener('touchstart', onTouchStart);
         };
-    }, [canDrag, onDragEnd]);
+    }, [canDrag, sourceId, data, onDragEnd]);
 
     return dragRef;
+};
+
+function getDroppableIdFromPoint(x: number, y: number) {
+    const elements = document.elementsFromPoint(x, y);
+
+    for (let element of elements) {
+        if ((element as HTMLElement).dataset.droppableId) {
+            return (element as HTMLElement).dataset.droppableId as string;
+        }
+    }
+    return null;
 };

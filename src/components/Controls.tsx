@@ -18,18 +18,23 @@ const Controls: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const undoAvailable = useAppSelector(state => state.game.undoAvailable);
+    const timeControl = useAppSelector(state => state.game.timeControl);
 
     const canUndo = useAppSelector(state => state.deck.past.length > 0) && undoAvailable;
     const canRedo = useAppSelector(state => state.deck.future.length > 0) && undoAvailable;
 
     const handleUndoClick = () => {
         dispatch(ActionCreators.undo());
-        dispatch(incrementTime(5));
+        if (timeControl) {
+            dispatch(incrementTime(5));
+        }
     };
 
     const handleRedoClick = () => {
         dispatch(ActionCreators.redo());
-        dispatch(incrementTime(5));
+        if (timeControl) {
+            dispatch(incrementTime(5));
+        }
     };
     
     const handleNewGameButtonClick = () => {
