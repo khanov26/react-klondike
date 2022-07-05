@@ -4,7 +4,7 @@ import {Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Settings, Undo} from "
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {start, restart, openPrefences, incrementTime} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
-import {isDesktopQuery, isTabletQuery} from "../mediaQueries";
+import {desktopQuery, tabletQuery} from "../mediaQueries";
 
 const Controls: React.FC = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -47,8 +47,8 @@ const Controls: React.FC = () => {
         dispatch(ActionCreators.clearHistory());
     };
 
-    const isDesktop = useMediaQuery(isDesktopQuery);
-    const isTablet = useMediaQuery(isTabletQuery);
+    const isDesktop = useMediaQuery(desktopQuery);
+    const isTablet = useMediaQuery(tabletQuery);
     let fontSize: 'small' | 'medium' | 'large';
     if (isDesktop || isTablet) {
         fontSize = 'medium';

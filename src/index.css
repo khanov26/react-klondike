@@ -13,6 +13,7 @@ html, body {
     right: 0;
     bottom: 0;
     background-color: darkgreen;
+    overflow: hidden;
 }
 
 .card {

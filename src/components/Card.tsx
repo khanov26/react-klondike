@@ -1,6 +1,9 @@
 import React from "react";
+import { useMediaQuery } from "@mui/material";
+import { mobileQuery } from "../mediaQueries";
 import {ICard} from "../store/deck/types";
 import {getShortName} from "../store/deck/utils";
+import MobileCardContent from "./MobileCardContent";
 
 interface Props {
     card: ICard;
@@ -20,13 +23,25 @@ const svgs = paths.reduce((images: Record<string, string>, path) => {
 const Card: React.FC<Props> = ({card}) => {
     const cardShortName = getShortName(card);
 
-    const CardImage = card.isUpturned ?
-        svgs[cardShortName] :
-        svgs['1B'];
+    const isMobile = useMediaQuery(mobileQuery);
+
+    let CardImage: string;
+    let cardContent: React.ReactElement;
+    if (card.isUpturned) {
+        if (isMobile) {
+            cardContent = <MobileCardContent card={card} />;
+        } else {
+            CardImage = svgs[cardShortName];
+            cardContent = <CardImage />;
+        }
+    } else {
+        CardImage = svgs['1B'];
+        cardContent = <CardImage />;
+    }
 
     return (
         <div className="card">
-            <CardImage/>
+            {cardContent}
         </div>
 
     );

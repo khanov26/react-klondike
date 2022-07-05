@@ -1,8 +1,9 @@
 import React, {useMemo} from 'react';
 import {ICard} from "../store/deck/types";
-import {Box} from "@mui/material";
+import {Box, useMediaQuery} from "@mui/material";
 import Card from "./Card";
 import useDrag from "../hooks/dragndrop/useDrag";
+import { landscapeQuery, mobileQuery } from '../mediaQueries';
 
 type Props = {
     cards: ICard[];
@@ -16,6 +17,20 @@ const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
     const canDrag = card.isUpturned;
 
     const dragRef = useDrag({canDrag, sourceId: `pile-${pileIndex}`, data: cards});
+
+    const isMobile = useMediaQuery(mobileQuery);
+    const isLandscape = useMediaQuery(landscapeQuery);
+
+    let marginTop;
+    if (card.isUpturned) {
+        if (isMobile && !isLandscape) {
+            marginTop = '36%';
+        } else {
+            marginTop = '25%';
+        }
+    } else {
+        marginTop = '15%';
+    }
 
     return (
         <Box ref={dragRef} sx={{
@@ -31,7 +46,7 @@ const PileBox: React.FC<Props> = ({cards, pileIndex}) => {
             <Box sx={{
                 gridColumn: '1/1',
                 gridRow: '1/1',
-                mt: card.isUpturned ? '25%' : '15%',
+                marginTop,
             }}>
                 <PileBox cards={nextLevelCards} pileIndex={pileIndex}/>
             </Box>

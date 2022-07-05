@@ -8,7 +8,7 @@ import WinModal from "./components/WinModal";
 import Timer from "./components/Timer";
 import {useAppDispatch, useAppSelector} from "./store/hooks";
 import {gameOver, incrementTime} from "./store/game/gameSlice";
-import {isDesktopQuery, isLandscapeQuery} from "./mediaQueries";
+import {desktopQuery, landscapeQuery, mobileQuery} from "./mediaQueries";
 import Preferences from './components/Preferences';
 import DragDropProvider from './hooks/dragndrop/provider';
 import { ICard } from './store/deck/types';
@@ -90,8 +90,9 @@ function App() {
         }
     };
 
-    const isDesktop = useMediaQuery(isDesktopQuery);
-    const isLandscape = useMediaQuery(isLandscapeQuery);
+    const isDesktop = useMediaQuery(desktopQuery);
+    const isMobile = useMediaQuery(mobileQuery);
+    const isLandscape = useMediaQuery(landscapeQuery);
 
     const handleDragEnd = useCallback((sourceId: string, destinationId: string, cards: ICard[]) => {
         const source = sourceId.split('-');
@@ -153,7 +154,7 @@ function App() {
                 </Stack>
 
                 <Box>
-                    <Grid container columns={7} spacing={'1%'}>
+                    <Grid container columns={7} spacing={'1%'} direction={isMobile ? 'row-reverse' : 'row'}>
                         <DragDropProvider onDragEnd={handleDragEnd}>
                             <Grid item xs={3}>
                                 <Stock onMoveToFoundations={tryMoveFromStockToFoundations}/>
