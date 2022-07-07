@@ -1,10 +1,10 @@
 import React from 'react';
 import {Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, useMediaQuery} from "@mui/material";
-import {Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Settings, Undo} from "@mui/icons-material";
+import {AutoGraph, Menu as MenuIcon, PowerSettingsNew, Redo, Replay, Settings, Undo} from "@mui/icons-material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
-import {start, restart, openPrefences, incrementTime} from '../store/game/gameSlice';
+import {start, restart, openPrefences, incrementTime, openStatistics} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
-import {desktopQuery, tabletQuery} from "../mediaQueries";
+import {mobileQuery} from "../mediaQueries";
 
 const Controls: React.FC = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -47,10 +47,9 @@ const Controls: React.FC = () => {
         dispatch(ActionCreators.clearHistory());
     };
 
-    const isDesktop = useMediaQuery(desktopQuery);
-    const isTablet = useMediaQuery(tabletQuery);
+    const isMobile = useMediaQuery(mobileQuery);
     let fontSize: 'small' | 'medium' | 'large';
-    if (isDesktop || isTablet) {
+    if (!isMobile) {
         fontSize = 'medium';
     } else {
         fontSize = 'small';
@@ -100,6 +99,13 @@ const Controls: React.FC = () => {
                             <Settings/>
                         </ListItemIcon>
                         <ListItemText>Настройки</ListItemText>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem onClick={() => dispatch(openStatistics())}>
+                        <ListItemIcon>
+                            <AutoGraph/>
+                        </ListItemIcon>
+                        <ListItemText>Статистика</ListItemText>
                     </MenuItem>
                 </MenuList>
             </Menu>

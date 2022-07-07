@@ -3,7 +3,7 @@ import {Typography, useMediaQuery} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {formatTime} from "../store/game/time";
 import {incrementTime} from "../store/game/gameSlice";
-import {desktopQuery, tabletQuery} from "../mediaQueries";
+import {mobileQuery} from "../mediaQueries";
 
 const Timer: React.FC = () => {
     const isGameOver = useAppSelector(state => state.game.isOver);
@@ -21,10 +21,9 @@ const Timer: React.FC = () => {
         return () => window.clearInterval(timerId);
     }, [isGameOver, isNewGame, dispatch]);
 
-    const isDesktop = useMediaQuery(desktopQuery);
-    const isTablet = useMediaQuery(tabletQuery);
+    const isMobile = useMediaQuery(mobileQuery);
     let fontSize;
-    if (isDesktop || isTablet) {
+    if (!isMobile) {
         fontSize = '1.5rem';
     } else {
         fontSize = '1rem';

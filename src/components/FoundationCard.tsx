@@ -3,6 +3,7 @@ import {ICard} from "../store/deck/types";
 import {Box} from "@mui/material";
 import Card from "./Card";
 import useDrag from "../hooks/dragndrop/useDrag";
+import { useAppSelector } from '../store/hooks';
 
 type Props = {
     card: ICard | null;
@@ -15,7 +16,9 @@ const styles = {
 };
 
 const FoundationCard: React.FC<Props> = ({card, foundationIndex}) => {
-    const canDrag = card !== null && card.isUpturned;
+    const isGameOver = useAppSelector(state => state.game.isOver);
+
+    const canDrag = card !== null && !isGameOver;
     const dragRef = useDrag({canDrag, sourceId: `foundation-${foundationIndex}`, data: [card]});
 
     if (card === null) {

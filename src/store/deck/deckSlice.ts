@@ -3,7 +3,15 @@ import {shuffle} from "lodash";
 import {ICard, IDeckState} from "./types";
 import {orderedDeck} from "./utils";
 
-let initialState = getInitialState();
+const initialState: IDeckState = {
+    piles: Array(7).fill([]),
+    stock: {
+        downturned: orderedDeck,
+        upturned: [],
+    },
+    foundations: Array(4).fill([]),
+};
+let dealtCards: IDeckState;
 
 const deckSlice = createSlice({
     name: 'deck',
@@ -70,10 +78,10 @@ const deckSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase('game/start', () => {
-                initialState = getInitialState();
-                return initialState;
+                dealtCards = dealCards();
+                return dealtCards;
             })
-            .addCase('game/restart', () => initialState);
+            .addCase('game/restart', () => dealtCards);
     }
 });
 
@@ -90,7 +98,7 @@ export const {
     moveFromStockToPile,
 } = deckSlice.actions;
 
-function getInitialState(): IDeckState {
+function dealCards(): IDeckState {
     const shuffledDeck = shuffle(orderedDeck);
 
     const piles = [];
@@ -110,11 +118,6 @@ function getInitialState(): IDeckState {
             downturned: shuffledDeck,
             upturned: [],
         },
-        foundations: [
-            [],
-            [],
-            [],
-            []
-        ]
+        foundations: Array(4).fill([]),
     };
 }
