@@ -20,6 +20,7 @@ import { cardSound, applauseSound } from './sounds';
 function App() {
     const timeControl = useAppSelector(state => state.game.timeControl);
     const autoMove = useAppSelector(state => state.game.autoMove);
+    const isOver = useAppSelector(state => state.game.isOver);
     const sounds = useAppSelector(state => state.game.sounds);
     const piles = useAppSelector(state => state.deck.present.piles);
     const foundations = useAppSelector(state => state.deck.present.foundations);
@@ -91,7 +92,7 @@ function App() {
     }, [foundations, dispatch, sounds]);
 
     const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        if (autoMove) {
+        if (autoMove && !isOver) {
             if (timeControl) {
                 dispatch(incrementTime(10));
             }

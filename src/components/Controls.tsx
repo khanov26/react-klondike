@@ -20,6 +20,7 @@ const Controls: React.FC = () => {
 
     const undoAvailable = useAppSelector(state => state.game.undoAvailable);
     const timeControl = useAppSelector(state => state.game.timeControl);
+    const isOver = useAppSelector(state => state.game.isOver);
     const sounds = useAppSelector(state => state.game.sounds);
 
     const canUndo = useAppSelector(state => state.deck.past.length > 0) && undoAvailable;
@@ -82,7 +83,7 @@ const Controls: React.FC = () => {
                         </ListItemIcon>
                         <ListItemText>Новая игра</ListItemText>
                     </MenuItem>
-                    <MenuItem onClick={handleTryAgainButtonClick}>
+                    <MenuItem onClick={handleTryAgainButtonClick} disabled={isOver}>
                         <ListItemIcon>
                             <Replay/>
                         </ListItemIcon>

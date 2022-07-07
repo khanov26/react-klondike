@@ -26,6 +26,7 @@ const WinModal: React.FC = () => {
         <Stack direction="column" alignItems="center">
             <Typography variant="h3" sx={{
                 fontSize: {xs: '1.5rem', sm: '2rem', md: '3rem'},
+                textAlign: 'center',
             }}>
                 Поздравляю! Вы&nbsp;выиграли!
             </Typography>
