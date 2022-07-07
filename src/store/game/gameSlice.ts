@@ -14,6 +14,7 @@ const initialState = Object.assign({
     playedGamesCount: 0,
     wonGamesCount: 0,
     bestTime: 0,
+    sounds: true,
 }, loadPreferencesFromStorage(), loadStatisticsFromStorage());
 
 const startGame = (state: typeof initialState) => {
@@ -77,6 +78,10 @@ const gameSlice = createSlice({
         closeStatistics: state => {
             state.isStatisticsOpen = false;
         },
+        toggleSounds: state => {
+            state.sounds = !state.sounds;
+            savePreferencesToStorage(state);
+        },
     },
     extraReducers: builder => {
         builder.addMatcher(isDeckAction, state => {
@@ -100,6 +105,7 @@ export const {
     toggleUndoAvailable,
     openStatistics,
     closeStatistics,
+    toggleSounds,
 } = gameSlice.actions;
 
 function savePreferencesToStorage(state: typeof initialState) {
@@ -108,6 +114,7 @@ function savePreferencesToStorage(state: typeof initialState) {
         autoMove: state.autoMove,
         autoOpen: state.autoOpen,
         undoAvailable: state.undoAvailable,
+        sounds: state.sounds,
     };
     localStorage.setItem('preferences', JSON.stringify(preferences));
 }

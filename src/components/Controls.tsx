@@ -5,6 +5,7 @@ import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {start, restart, openPrefences, incrementTime, openStatistics} from '../store/game/gameSlice';
 import {ActionCreators} from 'redux-undo';
 import {mobileQuery} from "../mediaQueries";
+import { stockSound } from '../sounds';
 
 const Controls: React.FC = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -19,6 +20,7 @@ const Controls: React.FC = () => {
 
     const undoAvailable = useAppSelector(state => state.game.undoAvailable);
     const timeControl = useAppSelector(state => state.game.timeControl);
+    const sounds = useAppSelector(state => state.game.sounds);
 
     const canUndo = useAppSelector(state => state.deck.past.length > 0) && undoAvailable;
     const canRedo = useAppSelector(state => state.deck.future.length > 0) && undoAvailable;
@@ -40,11 +42,17 @@ const Controls: React.FC = () => {
     const handleNewGameButtonClick = () => {
         dispatch(start());
         dispatch(ActionCreators.clearHistory());
+        if (sounds) {
+            stockSound.play();
+        }
     };
 
     const handleTryAgainButtonClick = () => {
         dispatch(restart());
         dispatch(ActionCreators.clearHistory());
+        if (sounds) {
+            stockSound.play();
+        }
     };
 
     const isMobile = useMediaQuery(mobileQuery);

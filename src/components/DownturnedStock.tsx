@@ -3,19 +3,27 @@ import {Box} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import Card from "./Card";
 import {openNextCard, turnStock} from '../store/deck/deckSlice';
+import { cardSound, stockSound } from '../sounds';
 
 const DownturnedStock: React.FC = () => {
     const dispatch = useAppDispatch();
     const downturnedCards = useAppSelector(state => state.deck.present.stock.downturned);
     const upturnedCards = useAppSelector(state => state.deck.present.stock.upturned);
+    const sounds = useAppSelector(state => state.game.sounds);
 
     const handleStockClick = () => {
         dispatch(openNextCard());
+        if (sounds) {
+            cardSound.play();
+        }
     };
 
     const handleEmptyStockClick = () => {
         if (upturnedCards.length > 0) {
             dispatch(turnStock());
+            if (sounds) {
+                stockSound.play();
+            }
         }
     };
 

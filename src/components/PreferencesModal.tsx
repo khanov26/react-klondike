@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Checkbox, Divider, FormControlLabel, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { closePreferences, toggleTimeControl, toggleAutoMove, toggleAutoOpen, toggleUndoAvailable } from '../store/game/gameSlice';
+import { closePreferences, toggleTimeControl, toggleAutoMove, toggleAutoOpen, toggleUndoAvailable, toggleSounds } from '../store/game/gameSlice';
 import BaseModal from './BaseModal';
 
 const PreferencesModal: React.FC = () => {
@@ -11,6 +11,7 @@ const PreferencesModal: React.FC = () => {
     const autoMove = useAppSelector(state => state.game.autoMove);
     const autoOpen = useAppSelector(state => state.game.autoOpen);
     const undoAvailable = useAppSelector(state => state.game.undoAvailable);
+    const sounds = useAppSelector(state => state.game.sounds);
     const dispatch = useAppDispatch();
     const handleClose = () => {
         dispatch(closePreferences());
@@ -78,6 +79,18 @@ const PreferencesModal: React.FC = () => {
                     <Checkbox
                         checked={undoAvailable}
                         onChange={() => dispatch(toggleUndoAvailable())}
+                    />
+                }
+            />
+
+            <Divider sx={{ my: 1 }} />
+
+            <FormControlLabel
+                label="Включить звуки"
+                control={
+                    <Checkbox
+                        checked={sounds}
+                        onChange={() => dispatch(toggleSounds())}
                     />
                 }
             />

@@ -15,10 +15,12 @@ import { ICard } from './store/deck/types';
 import { canMoveToFoundation, canMoveToPile, isGameOver } from './store/deck/gameRules';
 import { moveFromFoundationToFoundation, moveFromFoundationToPile, moveFromPileToFoundation, moveFromPileToPile, moveFromStockToFoundation, moveFromStockToPile } from './store/deck/deckSlice';
 import StatisticsModal from './components/StatisticsModal';
+import { cardSound, applauseSound } from './sounds';
 
 function App() {
     const timeControl = useAppSelector(state => state.game.timeControl);
     const autoMove = useAppSelector(state => state.game.autoMove);
+    const sounds = useAppSelector(state => state.game.sounds);
     const piles = useAppSelector(state => state.deck.present.piles);
     const foundations = useAppSelector(state => state.deck.present.foundations);
     const stock = useAppSelector(state => state.deck.present.stock.upturned);
@@ -53,11 +55,14 @@ function App() {
         for (let foundationIndex = 0; foundationIndex < 4; foundationIndex++) {
             if (canMoveToFoundation([upturnedStockLastCard], foundations[foundationIndex])) {
                 dispatch(moveFromStockToFoundation(foundationIndex));
+                if (sounds) {
+                    cardSound.play();
+                }
                 return true;
             }
         }
         return false;
-    }, [foundations, dispatch]);
+    }, [foundations, dispatch, sounds]);
 
     const tryMoveFromPilesToFoundations = () => {
         for (let pileIndex = 0; pileIndex < piles.length; pileIndex++) {
@@ -77,10 +82,13 @@ function App() {
         for (let foundationIndex = 0; foundationIndex < 4; foundationIndex++) {
             if (canMoveToFoundation([pileLastCard], foundations[foundationIndex])) {
                 dispatch(moveFromPileToFoundation({ fromIndex: pileIndex, toIndex: foundationIndex }));
+                if (sounds) {
+                    cardSound.play();
+                }
                 return true;
             }
         }
-    }, [foundations, dispatch]);
+    }, [foundations, dispatch, sounds]);
 
     const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
         if (autoMove) {
@@ -112,6 +120,9 @@ function App() {
             } else if (sourceType === 'pile') {
                 dispatch(moveFromPileToFoundation({ fromIndex: sourceIndex, toIndex: destinationIndex }));
             }
+            if (sounds) {
+                cardSound.play();
+            }
         } else if (destinationType === 'pile' && canMoveToPile(cards, piles[destinationIndex])) {
             if (sourceType === 'stock') {
                 dispatch(moveFromStockToPile(destinationIndex));
@@ -120,14 +131,20 @@ function App() {
             } else if (sourceType === 'pile') {
                 dispatch(moveFromPileToPile({ fromIndex: sourceIndex, toIndex: destinationIndex, cards }));
             }
+            if (sounds) {
+                cardSound.play();
+            }
         }
-    }, [foundations, piles, dispatch]);
+    }, [foundations, piles, sounds, dispatch]);
 
     useEffect(() => {
         if (isGameOver(foundations)) {
             dispatch(gameOver());
+            if (sounds) {
+                applauseSound.play();
+            }
         }
-    }, [foundations, dispatch]);
+    }, [foundations, dispatch, sounds]);
 
     useEffect(() => {
         dispatch(start());
